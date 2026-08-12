@@ -7,25 +7,21 @@ TOKEN = os.environ.get("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 
 
-@bot.message_handler(commands=["start"])
-def start(message):
-    menu_principal(message)
-
-
+@bot.message_handler(commands=["start", "menu"])
 def menu_principal(message):
-    markup = types.InlineKeyboardMarkup()
+    clavier = types.InlineKeyboardMarkup()
 
-    markup.add(
+    clavier.add(
         types.InlineKeyboardButton("📚 Produits numériques", callback_data="produits"),
         types.InlineKeyboardButton("🤖 Services IA", callback_data="services")
     )
 
-    markup.add(
+    clavier.add(
         types.InlineKeyboardButton("🛍️ Bons plans", callback_data="bonsplans"),
         types.InlineKeyboardButton("🎁 Offres gratuites", callback_data="gratuit")
     )
 
-    markup.add(
+    clavier.add(
         types.InlineKeyboardButton("💰 Mon compte", callback_data="compte")
     )
 
@@ -33,48 +29,28 @@ def menu_principal(message):
         message.chat.id,
         "👋 Bienvenue sur GagneMalinFrance !\n\n"
         "💰 Découvre nos offres et services.\n\n"
-        "Choisis une catégorie ci-dessous :",
-        reply_markup=markup
+        "👇 Choisis ce qui t'intéresse :",
+        reply_markup=clavier
     )
 
 
-@bot.message_handler(commands=["menu"])
-def menu(message):
-    menu_principal(message)
-
-
 @bot.callback_query_handler(func=lambda call: True)
-def boutons(call):
+def bouton_clique(call):
 
     if call.data == "produits":
-        texte = (
-            "📚 PRODUITS NUMÉRIQUES\n\n"
-            "Découvre nos produits numériques disponibles."
-        )
+        texte = "📚 PRODUITS NUMÉRIQUES\n\nNos ebooks et autres produits numériques seront bientôt disponibles."
 
     elif call.data == "services":
-        texte = (
-            "🤖 SERVICES IA\n\n"
-            "Découvre nos services réalisés avec l'intelligence artificielle."
-        )
+        texte = "🤖 SERVICES IA\n\nCV, lettres, textes et créations personnalisées seront bientôt disponibles."
 
     elif call.data == "bonsplans":
-        texte = (
-            "🛍️ BONS PLANS\n\n"
-            "Retrouve ici nos bons plans et recommandations."
-        )
+        texte = "🛍️ BONS PLANS\n\nNos bons plans seront bientôt disponibles."
 
     elif call.data == "gratuit":
-        texte = (
-            "🎁 OFFRES GRATUITES\n\n"
-            "Retrouve ici les offres gratuites disponibles."
-        )
+        texte = "🎁 OFFRES GRATUITES\n\nNos offres gratuites seront bientôt disponibles."
 
     elif call.data == "compte":
-        texte = (
-            "💰 MON COMPTE\n\n"
-            "Cette partie sera configurée prochainement."
-        )
+        texte = "💰 MON COMPTE\n\nCette partie sera ajoutée prochainement."
 
     else:
         texte = "❌ Option inconnue."
@@ -84,7 +60,7 @@ def boutons(call):
 
 
 @bot.message_handler(func=lambda message: True)
-def answer(message):
+def autre_message(message):
     bot.send_message(
         message.chat.id,
         "🤖 Utilise /menu pour afficher le menu."
